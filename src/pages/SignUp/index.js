@@ -1,8 +1,10 @@
-import React,{ useState } from 'react';
+import React,{ useState, useEffect, useCallback } from 'react';
 import Input from 'common/styled/Input';
 import Button from 'common/styled/Button';
 import { useHistory } from 'react-router-dom';
 import * as S from './styles';
+
+const AVS = require('alexa-voice-service');
 
 function SignUp() {
 
@@ -12,9 +14,29 @@ function SignUp() {
   const [clientSecret, setClientSecret] = useState("");
   const [amazonId, setAmazonId] = useState("");
 
+  const avs = new AVS({
+    debug: true,
+    clientId: 'amzn1.application-oa2-client.0b7df614da91493abb2a49b13861c5f4',
+    deviceId: 'AlexaPopOS',
+    deviceSerialNumber: 'cbb5e5eb5e6b4df3b395146563395463',
+    redirectUri: `http://${window.location.host}/home`
+  });
+
+  useEffect(() => {
+    const cachedToken = localStorage.getItem('token');
+
+    if (cachedToken) {
+      avs.setToken(cachedToken);
+      history.push('/home');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+
   const handleNext = () => {
-    history.push('/home');
+      return avs.login()
   }
+
 
   return (
   <S.Container>
