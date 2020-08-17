@@ -1,4 +1,4 @@
-import React,{ useState, useEffect, useCallback } from 'react';
+import React,{ useState, useEffect } from 'react';
 import Input from 'common/styled/Input';
 import Button from 'common/styled/Button';
 import { useHistory } from 'react-router-dom';
@@ -18,7 +18,7 @@ function SignUp() {
     debug: true,
     clientId: 'amzn1.application-oa2-client.0b7df614da91493abb2a49b13861c5f4',
     deviceId: 'AlexaPopOS',
-    deviceSerialNumber: 'cbb5e5eb5e6b4df3b395146563395463',
+    deviceSerialNumber: '46f663d40c174991a1ea78eb29a2860a',
     redirectUri: `http://${window.location.host}/home`
   });
 

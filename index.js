@@ -1,4 +1,4 @@
-const { app, BrowserWindow, systemPreferences } = require('electron');
+const { app, BrowserWindow } = require('electron');
 
 let win;
 
@@ -12,6 +12,8 @@ function createWindow(){
     }
   });
   win.loadURL('http://localhost:3000');
+  
+  win.webContents.toggleDevTools();
 }
 
 app.on('ready', createWindow);
