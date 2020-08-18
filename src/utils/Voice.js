@@ -26,16 +26,19 @@ export function recognition(text, callback){
   export function findAudios(xhr, response){
       if(response.body){
         let content = new TextDecoder().decode(response.body);
-        
+        let urls = [];
         let externalaudio = content.search('AudioPlayer')
-        
         if (externalaudio > 0){
-          let urlstart = content.search('streamUrl')
-          let urlend = content.search('offsetInMilliseconds')
-          if (urlstart > 0){
-            let url = content.substring(urlstart + 12, urlend - 3)
-            return url;
+          let subcontent = content.split('streamUrl');
+          for(let i = 1; i < subcontent.length; i++){
+            let urlend = subcontent[i].search('offsetInMilliseconds')
+            if (urlend > 0){
+              let url = subcontent[i].substring(3, urlend - 3)
+                urls.push(url);
+            }
           }
+
+          return urls;
         }
       }else if(response.multipart.length){
         let audios = [];
@@ -46,13 +49,12 @@ export function recognition(text, callback){
 
             let  content = xhr.response.slice(start, end);
 
-            console.log(new TextDecoder().decode(content))
             let blob = new  Blob([content], { type: "audio/mp3" });
             
             audios.push(window.URL.createObjectURL(blob))
           }
         });
 
-        return audios[0];
+        return audios;
       }
   }

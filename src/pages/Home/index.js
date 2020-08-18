@@ -57,17 +57,28 @@ function Home() {
           avs.sendAudio(dataView)
           .then(({xhr, response}) => {
       
-            let audio = Voice.findAudios(xhr, response);
-            avs.player.playUrl(audio).then(() => {
-              avs.requestMic().then(() => Voice.recognition('Alexa', () => {
-                avs.player.playUrl(require('assets/sounds/sound-activate.mp3')).then(() =>{
-                  avs.startRecording();
-                  avs.player.stop();
+            let audios = Voice.findAudios(xhr, response);
+            let promises = [];
+
+            for(let i = 0; i < audios.length; i++){
+              console.log(audios[i])
+              promises.push(avs.player.enqueue(audios[i]));
+            }
+
+            if (promises.length) {
+              Promise.all(promises)
+             .then(() => {
+                avs.player.playQueue().then(() => {
+                  avs.requestMic().then(() => Voice.recognition('Alexa', () => {
+                    avs.player.playUrl(require('assets/sounds/sound-activate.mp3')).then(() =>{
+                      avs.startRecording();
+                      avs.player.stop();
+                    })
+                  }))
+                  setVoiceOn(false)
                 })
-              }))
-              setVoiceOn(false)
-            })
-            
+              });
+            }          
           })
           .catch(error => {
             avs.player.playUrl(require('assets/sounds/sound-error.mp3')).then(() =>{
